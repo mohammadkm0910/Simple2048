@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Simple 2048</string>
+    <string name="best_score">بهترین امتیاز</string>
+    <string name="default_score">0</string>
+    <string name="header">2048</string>
+    <string name="current_score">امتیاز کنونی</string>
+    <string name="reset_game">ریست بازی</string>
+    <string name="game_again_title_dialog_reset">آیا می خواهید از ابتدا بازی کنید؟</string>
+    <string name="title_best_score_dialog_reset">بهترین رکوردی که تا الان زدی</string>
+    <string name="yes">بله</string>
+    <string name="no">نه</string>
+    <string name="title_finish_dialog">بازی تمام شد</string>
+    <string name="your_score">امتیاز شما</string>
+    <string name="your_best_score_finish_dialog">بهترین امتیاز شما:</string>
+    <string name="title_button_finish_dialog">آیا بازی را دوباره امتحان کنید؟</string>
+    <string name="welcome_message">به بازی خوش آمدید</string>
+</resources>

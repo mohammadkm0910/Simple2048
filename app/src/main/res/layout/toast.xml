@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mohammadkk.simple2048.view.LinearRadius xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toast_layout_root"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    app:radiusCorner="8dp"
+    app:backgroundColor="@color/green_success">
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textColor="#FFF" />
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
+        android:contentDescription="@null" />
+</com.mohammadkk.simple2048.view.LinearRadius>

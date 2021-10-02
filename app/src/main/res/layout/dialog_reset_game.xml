@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginHorizontal="@dimen/margin_horizontal_dialog"
+    android:layout_marginTop="8dp"
+    android:background="@drawable/background_dialog"
+    android:padding="8dp"
+    android:id="@+id/dialogReset">
+
+    <TextView
+        android:id="@+id/titleResetDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="@string/game_again_title_dialog_reset"
+        android:textColor="@color/amber_400"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/titleBestScoreResetDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titleResetDialog"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="@string/title_best_score_dialog_reset"
+        android:textColor="@color/grey_50"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/titleBestScoreValResetDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titleBestScoreResetDialog"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/background_text_box_dialog"
+        android:gravity="start"
+        android:includeFontPadding="false"
+        android:minWidth="100dp"
+        android:paddingVertical="4dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="30dp"
+        android:text="@string/default_score"
+        android:textColor="@color/grey_50"
+        android:textSize="20sp" />
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignTop="@+id/titleBestScoreValResetDialog"
+        android:layout_alignEnd="@+id/titleBestScoreValResetDialog"
+        app:srcCompat="@drawable/ic_cup"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"/>
+
+    <Button
+        android:id="@+id/btnNoResetDialog"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/titleBestScoreValResetDialog"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/background_button_no_finish_game"
+        android:text="@string/no"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/btnYesResetDialog"
+        android:layout_width="95dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/titleBestScoreValResetDialog"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/background_button_yes_finish_game"
+        android:text="@string/yes"
+        android:textColor="@color/white" />
+
+</RelativeLayout>
