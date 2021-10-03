@@ -270,10 +270,9 @@ class MainActivity : AppCompatActivity() {
             tempScore = 0
         }
     }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun onTouchGame() {
-        gameView.setOnTouchListener(object : SwipeTouchListener(this@MainActivity) {
+        gameView.setOnTouchListener(SwipeTouchListener(this, object : Swiper {
             override fun onSwipeUp() {
                 gameView.setPlaySound(PlaySounds.SWIPE_GAME)
                 moveVertical(true)
@@ -302,7 +301,7 @@ class MainActivity : AppCompatActivity() {
                 nextNumber()
                 saveState()
             }
-        })
+        }))
     }
     private fun resetGameDialog() {
         val alertDialog = AlertDialog.Builder(this)
@@ -310,12 +309,14 @@ class MainActivity : AppCompatActivity() {
         val view = layoutInflater.inflate(R.layout.dialog_reset_game, findViewById(R.id.dialogReset), false)
         val titleResetDialog: TextView = view.findViewById(R.id.titleResetDialog)
         val titleBestScoreResetDialog: TextView = view.findViewById(R.id.titleBestScoreResetDialog)
+        val titleBestScoreValResetDialog: TextView = view.findViewById(R.id.titleBestScoreValResetDialog)
         val btnNoResetDialog: Button = view.findViewById(R.id.btnNoResetDialog)
         val btnYesResetDialog: Button = view.findViewById(R.id.btnYesResetDialog)
         titleResetDialog.setFont(this,"minister_bold")
         titleBestScoreResetDialog.setFont(this,"minister_bold")
         btnYesResetDialog.setFont(this,"minister_bold")
         btnNoResetDialog.setFont(this,"minister_bold")
+        titleBestScoreValResetDialog.text = bestScore.toString()
         alertDialog.setView(view).setCancelable(false)
         val dialog = alertDialog.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -339,6 +340,7 @@ class MainActivity : AppCompatActivity() {
         val view = layoutInflater.inflate(R.layout.dialog_finish_game, findViewById(R.id.finishDialog), false)
         val titleFinishDialog: TextView = view.findViewById(R.id.titleFinishDialog)
         val titleYourScoreFinishDialog: TextView = view.findViewById(R.id.titleYourScoreFinishDialog)
+        val valYourScoreFinishDialog: TextView = view.findViewById(R.id.valYourScoreFinishDialog)
         val bestScoreFinishDialog: TextView = view.findViewById(R.id.bestScoreFinishDialog)
         val btnCloseFinishDialog: ImageButton = view.findViewById(R.id.btnCloseFinishDialog)
         val btnGameAgainFinishDialog: Button = view.findViewById(R.id.btnGameAgainFinishDialog)
@@ -346,6 +348,7 @@ class MainActivity : AppCompatActivity() {
         titleYourScoreFinishDialog.setFont(this,"minister_bold")
         bestScoreFinishDialog.setFont(this,"minister_bold")
         btnGameAgainFinishDialog.setFont(this,"minister_bold")
+        valYourScoreFinishDialog.text = score.toString()
         alertDialog.setView(view).setCancelable(false)
         val dialog = alertDialog.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
