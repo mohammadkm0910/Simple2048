@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
@@ -20,6 +21,8 @@ import android.view.animation.AnimationUtils
 
 import android.widget.*
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.math.log
 
 
 class MainActivity : AppCompatActivity() {
@@ -109,7 +112,7 @@ class MainActivity : AppCompatActivity() {
             val row = Random.nextInt(4)
             val col = Random.nextInt(4)
             if (number[row][col] == 0) {
-                number[row][col] = (2 * ceil(Math.random() * 2)).toInt()
+                number[row][col] = if (Math.random() < 0.8) 2 else 4
                 gameView.setNumber(number)
                 break
             }
@@ -278,30 +281,30 @@ class MainActivity : AppCompatActivity() {
                 moveVertical(true)
                 gameView.setAnimation(AnimationMoves.UP)
                 nextNumber()
-                saveState()
             }
             override fun onSwipeRight() {
                 gameView.setPlaySound(PlaySounds.SWIPE_GAME)
                 moveHorizontal(true)
                 gameView.setAnimation(AnimationMoves.RIGHT)
                 nextNumber()
-                saveState()
             }
             override fun onSwipeDown() {
                 gameView.setPlaySound(PlaySounds.SWIPE_GAME)
                 moveVertical(false)
                 gameView.setAnimation(AnimationMoves.DOWN)
                 nextNumber()
-                saveState()
             }
             override fun onSwipeLeft() {
                 gameView.setPlaySound(PlaySounds.SWIPE_GAME)
                 moveHorizontal(false)
                 gameView.setAnimation(AnimationMoves.LEFT)
                 nextNumber()
-                saveState()
             }
         }))
+    }
+    override fun onDestroy() {
+        saveState()
+        super.onDestroy()
     }
     private fun resetGameDialog() {
         val alertDialog = AlertDialog.Builder(this)

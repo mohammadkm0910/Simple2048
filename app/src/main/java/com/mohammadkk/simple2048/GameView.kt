@@ -4,12 +4,16 @@ import android.content.Context
 import android.graphics.*
 import android.media.MediaPlayer
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
+import android.view.View.MeasureSpec
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
+import kotlin.math.log
 
 class GameView : AppCompatImageView {
     private lateinit var paint: Paint
@@ -107,16 +111,17 @@ class GameView : AppCompatImageView {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         fixedSize()
-        val size = width / 4
-        val margin = px * 4
+        val margin = px * 8
+        val size = ((width - margin) / 4 - margin).toInt()
+        val sizeR = size + margin
         val round = px * 5
         for (i in 0 until 4) {
             for (j in 0 until 4) {
                 val value = number[j][i]
                 val rectF = createRect(i, j, size, margin)
                 val color = getColors(value)
-                paint.color = ContextCompat.getColor(context, color[1])
-                textPaint.color = ContextCompat.getColor(context, color[0])
+                paint.color = ContextCompat.getColor(context, getColors(value))
+                textPaint.color = ContextCompat.getColor(context, R.color.color_tile)
                 for (k in 0 until mergedTiles.size) {
                     val merged = mergedTiles[k].split("/")
                     if (merged[0] == j.toString() && merged[1] == i.toString()) {
@@ -124,35 +129,38 @@ class GameView : AppCompatImageView {
                     }
                 }
                 canvas?.drawRoundRect(rectF, round, round, paint)
-                if (0 < value) {
+                if (value > 0) {
                     textPaint.textSize = if (value <= 512) size / 2.4f else size / 3f
-                    canvas?.drawText(value.toString(), (i + 0.5f) * size, (j + 0.65f) * size, textPaint)
+                    canvas?.drawText(value.toString(), (i + 0.5f) * sizeR + margin / 1.85f, (j + 0.65f) * sizeR + margin / 2.2f, textPaint)
                 }
             }
         }
     }
-    private fun getColors(value: Int): Array<Int> {
+    private fun getPosCell(size: Int, margin: Float, index: Int): Float {
+       return size * index + margin * (index + 1)
+    }
+    private fun getColors(value: Int): Int{
         return when (value) {
-            0 -> arrayOf(R.color.white, R.color.emptyTile)
-            2 -> arrayOf(R.color.color_tile_2, R.color.background_tile_2)
-            4 -> arrayOf(R.color.color_tile_4, R.color.background_tile_4)
-            8 -> arrayOf(R.color.color_tile_8, R.color.background_tile_8)
-            16 -> arrayOf(R.color.color_tile_16, R.color.background_tile_16)
-            32 -> arrayOf(R.color.color_tile_32, R.color.background_tile_32)
-            64 -> arrayOf(R.color.color_tile_64, R.color.background_tile_64)
-            128 -> arrayOf(R.color.color_tile_128, R.color.background_tile_128)
-            256 -> arrayOf(R.color.color_tile_256, R.color.background_tile_256)
-            512 -> arrayOf(R.color.color_tile_512, R.color.background_tile_512)
-            1024 -> arrayOf(R.color.color_tile_1024, R.color.background_tile_1024)
-            2048 -> arrayOf(R.color.color_tile_2048, R.color.background_tile_2048)
-            else -> arrayOf(R.color.color_tile_order, R.color.background_tile_order)
+            0 -> R.color.emptyTile
+            2 -> R.color.background_tile_2
+            4 -> R.color.background_tile_4
+            8 -> R.color.background_tile_8
+            16 -> R.color.background_tile_16
+            32 -> R.color.background_tile_32
+            64 -> R.color.background_tile_64
+            128 -> R.color.background_tile_128
+            256 -> R.color.background_tile_256
+            512 -> R.color.background_tile_512
+            1024 -> R.color.background_tile_1024
+            2048 -> R.color.background_tile_2048
+            else -> R.color.background_tile_order
         }
     }
     private fun createRect(x: Int, y: Int, size: Int, margin: Float) : RectF {
-        val left = (x * size) + margin
-        val top = (y * size) + margin
-        val right = ((x + 1) * size) - margin
-        val bottom = ((y + 1) * size) - margin
+        val left = getPosCell(size, margin, x)
+        val top = getPosCell(size, margin, y)
+        val right = left + size
+        val bottom = top + size
         return RectF(left, top, right, bottom)
     }
     private fun fixedSize() {
