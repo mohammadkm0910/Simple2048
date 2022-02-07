@@ -281,24 +281,28 @@ class MainActivity : AppCompatActivity() {
                 moveVertical(true)
                 gameView.setAnimation(AnimationMoves.UP)
                 nextNumber()
+                saveState()
             }
             override fun onSwipeRight() {
                 gameView.setPlaySound(PlaySounds.SWIPE_GAME)
                 moveHorizontal(true)
                 gameView.setAnimation(AnimationMoves.RIGHT)
                 nextNumber()
+                saveState()
             }
             override fun onSwipeDown() {
                 gameView.setPlaySound(PlaySounds.SWIPE_GAME)
                 moveVertical(false)
                 gameView.setAnimation(AnimationMoves.DOWN)
                 nextNumber()
+                saveState()
             }
             override fun onSwipeLeft() {
                 gameView.setPlaySound(PlaySounds.SWIPE_GAME)
                 moveHorizontal(false)
                 gameView.setAnimation(AnimationMoves.LEFT)
                 nextNumber()
+                saveState()
             }
         }))
     }
