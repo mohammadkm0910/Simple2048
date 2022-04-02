@@ -105,21 +105,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardScore"
-        app:layout_constraintBottom_toTopOf="@+id/btnResetScore"/>
-    <Button
-        android:id="@+id/btnResetScore"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomBar"/>
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/background_button_reset"
-        android:drawableRight="@drawable/ic_refresh"
-        android:drawablePadding="8dp"
-        android:paddingHorizontal="4dp"
-        android:text="@string/reset_game"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:includeFontPadding="false"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="8dp">
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnUndoGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_button_reset"
+            android:padding="8dp"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_undo"
+            android:tooltipText="@string/undo_game"
+            tools:targetApi="o"/>
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnResetGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_button_reset"
+            android:padding="8dp"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/ic_refresh"
+            android:tooltipText="@string/reset_game"
+            tools:targetApi="o"/>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

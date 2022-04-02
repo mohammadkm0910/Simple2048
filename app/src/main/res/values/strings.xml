@@ -14,4 +14,5 @@
     <string name="your_best_score_finish_dialog">بهترین امتیاز شما:</string>
     <string name="title_button_finish_dialog">آیا بازی را دوباره امتحان کنید؟</string>
     <string name="welcome_message">به بازی خوش آمدید</string>
+    <string name="undo_game">بازگشت به قبل</string>
 </resources>

@@ -33,5 +33,6 @@
 
     <color name="background_merged_tile">#9C27B0</color>
     <color name="green_success">#02B875</color>
+    <color name="red_danger">#F32013</color>
     <color name="light_green_500">#8BC34A</color>
 </resources>

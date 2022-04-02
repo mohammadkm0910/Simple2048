@@ -9,7 +9,7 @@ import android.view.View
 import kotlin.math.abs
 
 
-open class SwipeTouchListener(private val context: Context, private val swiper: Swiper) : View.OnTouchListener {
+abstract class SwipeTouchListener(private val context: Context) : View.OnTouchListener {
     private val gestureDetector: GestureDetector
 
     @SuppressLint("ClickableViewAccessibility")
@@ -28,17 +28,17 @@ open class SwipeTouchListener(private val context: Context, private val swiper: 
                 if (abs(diffX) > abs(diffY)) {
                     if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                         if (diffX > 0) {
-                            swiper.onSwipeRight()
+                            onSwiperToRight()
                         } else {
-                            swiper.onSwipeLeft()
+                            onSwiperToLeft()
                         }
                         result = true
                     }
                 } else if (abs(diffY) > SWIPE_THRESHOLD && abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                     if (diffY > 0) {
-                        swiper.onSwipeDown()
+                        onSwiperToDown()
                     } else {
-                        swiper.onSwipeUp()
+                        onSwiperToUp()
                     }
                     result = true
                 }
@@ -49,6 +49,11 @@ open class SwipeTouchListener(private val context: Context, private val swiper: 
             return result
         }
     }
+
+    abstract fun onSwiperToUp()
+    abstract fun onSwiperToRight()
+    abstract fun onSwiperToDown()
+    abstract fun onSwiperToLeft()
 
     init {
         gestureDetector = GestureDetector(context, GestureHelper())

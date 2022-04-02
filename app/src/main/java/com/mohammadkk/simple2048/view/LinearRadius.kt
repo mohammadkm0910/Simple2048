@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.widget.LinearLayout
+import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import com.mohammadkk.simple2048.R
 
@@ -28,6 +29,13 @@ class LinearRadius : LinearLayout {
         } finally {
             a.recycle()
         }
+        createBackground()
+    }
+    fun setBackgroundRes(@ColorRes color: Int) {
+        background = ContextCompat.getColor(context, color)
+        createBackground()
+    }
+    private fun createBackground() {
         val gradientDrawable = GradientDrawable()
         gradientDrawable.apply {
             setColor(background)

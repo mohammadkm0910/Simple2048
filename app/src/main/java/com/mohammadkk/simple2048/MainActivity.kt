@@ -5,34 +5,24 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import androidx.appcompat.app.AlertDialog
-import com.mohammadkk.simple2048.GameView.Companion.mergedTiles
-import kotlin.math.ceil
-import kotlin.random.Random
-
-import android.view.Gravity
-import android.view.View
 import android.view.animation.AnimationUtils
-
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import com.mohammadkk.simple2048.GameView.Companion.mergedTiles
+import com.mohammadkk.simple2048.databinding.ActivityMainBinding
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.math.log
+import kotlin.random.Random
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var titleCurrentScore: TextView
-    private lateinit var titleBestScore: TextView
-    private lateinit var currentScore: TextView
-    private lateinit var bestScoreVal: TextView
-    private lateinit var scoreAdded: TextView
-    private lateinit var gameView: GameView
-    private lateinit var btnResetScore: Button
+    private lateinit var binding: ActivityMainBinding
     private lateinit var sp: SharedPreferences
     private var score: Int = 0
     private var bestScore: Int = 0
@@ -44,31 +34,32 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        titleCurrentScore = findViewById(R.id.titleCurrentScore)
-        titleBestScore = findViewById(R.id.titleBestScore)
-        currentScore = findViewById(R.id.currentScore)
-        bestScoreVal = findViewById(R.id.bestScoreVal)
-        scoreAdded = findViewById(R.id.scoreAdded)
-        gameView = findViewById(R.id.gameView)
-        btnResetScore = findViewById(R.id.btnResetScore)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         sp = getSharedPreferences("game_state", Context.MODE_PRIVATE)
         bestScore = sp.getInt(KEY_BEST_SCORE, 0)
-        bestScoreVal.text = bestScore.toString()
-        number = gameView.getNumber()
-        titleCurrentScore.setFont(this,"minister_bold")
-        titleBestScore.setFont(this,"minister_bold")
-        btnResetScore.setFont(this,"minister_bold")
+        binding.bestScoreVal.text = bestScore.toString()
+        number = binding.gameView.getNumber()
+        binding.titleCurrentScore.setFont(this,"minister_bold")
+        binding.titleBestScore.setFont(this,"minister_bold")
         if (!sp.getBoolean(KEY_PLAYED, false)) {
-            alertWelcome()
+            createCustomToast("به بازی خوش آمدید")
             startGame()
+            saveState()
         } else {
             loadState()
         }
         onTouchGame()
-        btnResetScore.setOnClickListener {
-            gameView.setPlaySound(PlaySounds.CLICK_BUTTON)
+        binding.btnResetGame.setOnClickListener {
+            binding.gameView.setPlaySound(PlaySounds.CLICK_BUTTON)
             resetGameDialog()
+        }
+        binding.btnUndoGame.setOnClickListener {
+            if (sp.contains("undo_$KEY_SCORE")) {
+                loadUndoState()
+            } else {
+                createCustomToast("چیزی برای برگشت وجود ندارد", R.drawable.ic_close, R.color.red_danger)
+            }
         }
     }
     override fun onStart() {
@@ -104,7 +95,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 if (finishGame) {
-                    gameView.setPlaySound(PlaySounds.FINISH_GAME)
+                    binding.gameView.setPlaySound(PlaySounds.FINISH_GAME)
                     finishGameDialog()
                 }
                 break
@@ -113,7 +104,7 @@ class MainActivity : AppCompatActivity() {
             val col = Random.nextInt(4)
             if (number[row][col] == 0) {
                 number[row][col] = if (Math.random() < 0.8) 2 else 4
-                gameView.setNumber(number)
+                binding.gameView.setNumber(number)
                 break
             }
         }
@@ -127,7 +118,7 @@ class MainActivity : AppCompatActivity() {
         }
         nextNumber()
         nextNumber()
-        gameView.setNumber(number)
+        binding.gameView.setNumber(number)
     }
     private fun changeScore(newScore: Int) {
         if (newScore == 0) {
@@ -135,22 +126,22 @@ class MainActivity : AppCompatActivity() {
         } else {
             score += (newScore / 2)
         }
-        currentScore.text = score.toString()
+        binding.currentScore.text = score.toString()
         if (score > bestScore) {
             bestScore = score
-            bestScoreVal.text = bestScore.toString()
+            binding.bestScoreVal.text = bestScore.toString()
             sp.edit().putInt(KEY_BEST_SCORE, bestScore).apply()
         }
     }
     private fun setAnimationAddScore(addScore: Int) {
         val gameAddScoreAnim = AnimationUtils.loadAnimation(this, R.anim.game_add_score)
-        scoreAdded.apply {
+        binding.scoreAdded.apply {
             text = String.format(Locale.ENGLISH,"+%d", addScore)
             visibility = View.VISIBLE
         }
-        scoreAdded.startAnimation(gameAddScoreAnim)
+        binding.scoreAdded.startAnimation(gameAddScoreAnim)
         gameAddScoreAnim.endAnimation {
-            scoreAdded.visibility = View.GONE
+            binding.scoreAdded.visibility = View.GONE
         }
     }
     private fun saveState() {
@@ -163,15 +154,46 @@ class MainActivity : AppCompatActivity() {
         editor.putInt(KEY_SCORE, score)
         editor.apply()
     }
+    private fun saveUndoState() {
+        val editor = sp.edit()
+        for (i in 0 until 4) {
+            for (j in 0 until 4) {
+                editor.putInt("undo_$i$j", number[i][j])
+            }
+        }
+        editor.putInt("undo_$KEY_SCORE", score)
+        editor.apply()
+    }
     private fun loadState() {
         for (i in 0 until 4) {
             for (j in 0 until 4) {
                 number[i][j] = sp.getInt("$i$j", number[i][j])
             }
         }
-        gameView.setNumber(number)
+        binding.gameView.setNumber(number)
         score = sp.getInt(KEY_SCORE, 0)
-        currentScore.text = score.toString()
+        binding.currentScore.text = score.toString()
+    }
+    private fun loadUndoState() {
+        for (i in 0 until 4) {
+            for (j in 0 until 4) {
+                number[i][j] = sp.getInt("undo_$i$j", number[i][j])
+            }
+        }
+        binding.gameView.setNumber(number)
+        score = sp.getInt("undo_$KEY_SCORE", 0)
+        binding.currentScore.text = score.toString()
+        removeUndoState()
+    }
+    private fun removeUndoState() {
+        val editor = sp.edit()
+        for (i in 0 until 4) {
+            for (j in 0 until 4) {
+                editor.remove("undo_$i$j")
+            }
+        }
+        editor.remove("undo_$KEY_SCORE")
+        editor.apply()
     }
     private fun moveHorizontal(isRight: Boolean) {
         var col: Int
@@ -275,40 +297,40 @@ class MainActivity : AppCompatActivity() {
     }
     @SuppressLint("ClickableViewAccessibility")
     private fun onTouchGame() {
-        gameView.setOnTouchListener(SwipeTouchListener(this, object : Swiper {
-            override fun onSwipeUp() {
-                gameView.setPlaySound(PlaySounds.SWIPE_GAME)
+        binding.gameView.setOnTouchListener(object : SwipeTouchListener(this@MainActivity) {
+            override fun onSwiperToUp() {
+                binding.gameView.setPlaySound(PlaySounds.SWIPE_GAME)
+                saveUndoState()
                 moveVertical(true)
-                gameView.setAnimation(AnimationMoves.UP)
+                binding.gameView.setAnimation(AnimationMoves.UP)
                 nextNumber()
                 saveState()
             }
-            override fun onSwipeRight() {
-                gameView.setPlaySound(PlaySounds.SWIPE_GAME)
+            override fun onSwiperToRight() {
+                binding.gameView.setPlaySound(PlaySounds.SWIPE_GAME)
+                saveUndoState()
                 moveHorizontal(true)
-                gameView.setAnimation(AnimationMoves.RIGHT)
+                binding.gameView.setAnimation(AnimationMoves.RIGHT)
                 nextNumber()
                 saveState()
             }
-            override fun onSwipeDown() {
-                gameView.setPlaySound(PlaySounds.SWIPE_GAME)
+            override fun onSwiperToDown() {
+                binding.gameView.setPlaySound(PlaySounds.SWIPE_GAME)
+                saveUndoState()
                 moveVertical(false)
-                gameView.setAnimation(AnimationMoves.DOWN)
+                binding.gameView.setAnimation(AnimationMoves.DOWN)
                 nextNumber()
                 saveState()
             }
-            override fun onSwipeLeft() {
-                gameView.setPlaySound(PlaySounds.SWIPE_GAME)
+            override fun onSwiperToLeft() {
+                binding.gameView.setPlaySound(PlaySounds.SWIPE_GAME)
+                saveUndoState()
                 moveHorizontal(false)
-                gameView.setAnimation(AnimationMoves.LEFT)
+                binding.gameView.setAnimation(AnimationMoves.LEFT)
                 nextNumber()
                 saveState()
             }
-        }))
-    }
-    override fun onDestroy() {
-        saveState()
-        super.onDestroy()
+        })
     }
     private fun resetGameDialog() {
         val alertDialog = AlertDialog.Builder(this)
@@ -338,6 +360,7 @@ class MainActivity : AppCompatActivity() {
             startGame()
             changeScore(0)
             saveState()
+            removeUndoState()
             dialog.dismiss()
         }
     }
@@ -372,18 +395,5 @@ class MainActivity : AppCompatActivity() {
             saveState()
             dialog.dismiss()
         }
-    }
-    private fun alertWelcome() {
-        val layout = layoutInflater.inflate(R.layout.toast, findViewById(R.id.toast_layout_root), false)
-        val image: ImageView = layout.findViewById(R.id.image)
-        image.setImageResource(R.drawable.ic_done)
-        val text: TextView = layout.findViewById(R.id.text)
-        text.setFont(this, FONT_PERSIAN_TWO_NAME)
-        text.text = getString(R.string.welcome_message)
-        val toast = Toast(applicationContext)
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
-        toast.duration = Toast.LENGTH_LONG
-        toast.view = layout
-        toast.show()
     }
 }
